@@ -1,25 +1,37 @@
 # -*- coding: utf-8 -*-
 import bs4
 import urllib.request
+import urllib.parse
 import os
 import sys
 import json
+import types
 
 def formating_URL(query):
+    """
+    与えられたクエリから検索用のURLを作成し，返す
+    """
     query= query.split()
     query='+'.join(query)
-    url="https://www.google.co.in/search?q="+query+"&source=lnms&tbm=isch"
+
+    url="https://www.google.co.in/search?q="+urllib.parse.quote_plus(query,encoding='utf-8')+"&source=lnms&tbm=isch"
     return (url,query)
 
 def get_soup(url):
+    """
+    BeautifulSoupを使ってリクエストを飛ばし，データを返す．
+    """
     header={'User-Agent':"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.134 Safari/537.36"
     }
-
     request = urllib.request.urlopen(urllib.request.Request(url,headers=header))
     soup = bs4.BeautifulSoup(request,'html.parser')
     return soup
 
 def check_Dir(query):
+    """
+    検索用に新しくディレクトリを作成する．
+    もしすでに存在しているなら，そのまま
+    """
     DIR = "Pictures"
     if not os.path.exists(DIR):
         os.mkdir(DIR)
@@ -30,12 +42,16 @@ def check_Dir(query):
     return DIR
 
 def crawring(query):
+    """
+    本体のメソッド
+    クローリングを行い，その画像を書き出す．
+    """
     link_list = []
-    label = "0"
     url,query = formating_URL(query)
     print(url)
     soup = get_soup(url)
     DIR = check_Dir(query)
+    label = str(len([i for i in os.listdir('./Pictures/')]) + 1)
 
     for a in soup.find_all("div",{"class":"rg_meta"}):
         link , Type =json.loads(a.text)["ou"]  ,json.loads(a.text)["ity"]
@@ -61,6 +77,9 @@ def crawring(query):
     print("FINISH")
 
 def print_usage():
+    """
+    実行時引数にエラーがあった場合呼ばれるメソッド
+    """
     print("Usage: %s Query" %__file__)
     print("Queryに検索したいキーワードを入力してください")
     print("ちなみに日本語は不可．")
