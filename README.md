@@ -14,5 +14,5 @@ $python web_crawler.py "SampleImageQuery"
 beautifulsoup4==4.5.3
 
 
-## Licence
+## License
 Copyright © 2016 T_Sumida Distributed under the MIT License.
