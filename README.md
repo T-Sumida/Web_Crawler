@@ -15,4 +15,4 @@ beautifulsoup4==4.5.3
 
 
 ## License
-Copyright © 2016 T_Sumida Distributed under the MIT License.
+Copyright © 2021 T_Sumida Distributed under the MIT License.
